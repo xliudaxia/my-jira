@@ -4,6 +4,8 @@ import { SearchPanel } from "./search-panel";
 import qs from "qs";
 import { cleanObject, useDebounce, useMount } from "utils";
 
+// ts优点：1、减少代码bug  2、提示增强 3、代码更易读
+
 export const ProjectListScreen = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
   const [users, setUsers] = useState([]);
@@ -12,7 +14,7 @@ export const ProjectListScreen = () => {
     name: "",
     personId: "",
   });
-  const debouncedParam = useDebounce(param, 2000);
+  const debouncedParam = useDebounce(param, 200);
   useEffect(() => {
     // console.log("当前的param", debouncedParam);
     fetch(

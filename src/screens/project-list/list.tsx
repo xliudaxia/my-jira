@@ -1,5 +1,25 @@
 import React from "react";
-export const List = ({ users, list }) => {
+import { User } from "./search-panel";
+import { useArray } from "../../utils/index";
+
+interface Project {
+  id: string;
+  name: string;
+  personId: string;
+  pin: boolean;
+  orgnization: string;
+}
+
+interface ListProps {
+  list: Project[];
+  users: User[];
+}
+
+export const List = ({ users, list }: ListProps) => {
+  const { value, clear, removeIndex, add } = useArray([
+    { name: "douban", age: 16 },
+  ]);
+  console.log(value);
   return (
     <table>
       <thead>
