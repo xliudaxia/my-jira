@@ -1,20 +1,22 @@
+import { useAuth } from "context/auth-context";
 import React, { FormEvent } from "react";
 
 export const LoginScreen = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
-  const login = (param: { username: string; password: string }) => {
-    fetch(`${apiUrl}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(param),
-    }).then(async (reponse) => {
-      if (reponse.ok) {
-        console.log("登录成功");
-      }
-    });
-  };
+  const { login, user } = useAuth();
+  // const apiUrl = process.env.REACT_APP_API_URL;
+  // const login = (param: { username: string; password: string }) => {
+  //   fetch(`${apiUrl}/login`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(param),
+  //   }).then(async (response) => {
+  //     if (response.ok) {
+  //       console.log("登录成功");
+  //     }
+  //   });
+  // };
 
   const handleSumbmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,6 +28,11 @@ export const LoginScreen = () => {
   };
   return (
     <form action="" onSubmit={handleSumbmit}>
+      {user ? (
+        <div>
+          登录成功，用户名{user?.name} token:{user?.token}
+        </div>
+      ) : null}
       <div>
         <label htmlFor="username">用户名</label>
         <input type="text" id={"username"} />

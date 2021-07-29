@@ -6,6 +6,7 @@ export interface User {
   email: string;
   title: string;
   orgnization: string;
+  token: string;
 }
 
 interface SearchPanelProps {
