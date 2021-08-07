@@ -3,6 +3,7 @@ import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import qs from "qs";
 import { cleanObject, useDebounce, useMount } from "utils";
+import { useHttp } from "utils/http";
 
 // ts优点：1、减少代码bug  2、提示增强 3、代码更易读
 
@@ -14,23 +15,13 @@ export const ProjectListScreen = () => {
     name: "",
     personId: "",
   });
+  const client = useHttp();
   const debouncedParam = useDebounce(param, 200);
   useEffect(() => {
-    // console.log("当前的param", debouncedParam);
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`
-    ).then(async (reponse) => {
-      if (reponse.ok) {
-        setList(await reponse.json());
-      }
-    });
+    client("projects", { data: cleanObject(debouncedParam) }).then(setList);
   }, [debouncedParam]);
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (reponse) => {
-      if (reponse.ok) {
-        setUsers(await reponse.json());
-      }
-    });
+    client("users").then(setUsers);
   });
   return (
     <div>

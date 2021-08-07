@@ -1,6 +1,7 @@
 import React from "react";
 import { User } from "./search-panel";
 import { useArray } from "../../utils/index";
+import { Table } from "antd";
 
 interface Project {
   id: string;
@@ -16,10 +17,32 @@ interface ListProps {
 }
 
 export const List = ({ users, list }: ListProps) => {
-  const { value, clear, removeIndex, add } = useArray([
-    { name: "douban", age: 16 },
-  ]);
-  console.log(value);
+  // const { value, clear, removeIndex, add } = useArray([
+  //   { name: "douban", age: 16 },
+  // ]);
+  return (
+    <Table
+      pagination={false}
+      columns={[
+        {
+          title: "名称",
+          dataIndex: "name",
+          sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+          title: "负责人",
+          render(value, project) {
+            return (
+              <span>
+                {users.find((user) => user.id === project.personId)?.name}
+              </span>
+            );
+          },
+        },
+      ]}
+      dataSource={list}
+    />
+  );
   return (
     <table>
       <thead>
