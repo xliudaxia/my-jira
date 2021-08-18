@@ -18,6 +18,7 @@
     "@types/react-dom": "^17.0.0",
     "antd": "^4.16.10",
     "craco-less": "^1.18.0",
+    "dayjs": "^1.10.6",
     "jira-dev-tool": "^1.7.61",
     "json-server": "^0.16.3",
     "qs": "^6.10.1",

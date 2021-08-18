@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import qs from "qs";
+import styled from "@emotion/styled";
 import { cleanObject, useDebounce, useMount } from "utils";
 import { useHttp } from "utils/http";
 
@@ -24,9 +25,14 @@ export const ProjectListScreen = () => {
     client("users").then(setUsers);
   });
   return (
-    <div>
+    <Container>
+      <h1>项目列表</h1>
       <SearchPanel param={param} users={users} setParam={setParam} />
       <List users={users} list={list} />
-    </div>
+    </Container>
   );
 };
+
+const Container = styled.div`
+  padding: 3.2rem;
+`;
