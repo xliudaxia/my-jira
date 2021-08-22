@@ -4,24 +4,20 @@
 
 import { useEffect, useState } from "react";
 
-export const isFalsy = (value: any) => (value === 0 ? false : !value);
-export const isVoid = (value: unknown) =>
-  value === undefined || value === null || value === "";
-
+export const isFalsy = (value) => (value === 0 ? false : !value);
 //在函数里，最好不要改变传入的对象
-export const cleanObject = (object: { [key: string]: unknown }) => {
+export const cleanObject = (object) => {
   const result = { ...object };
   Object.keys(object).forEach((key) => {
-    // @ts-ignore
     const value = object[key];
-    if (isVoid(value)) {
+    if (isFalsy(value)) {
       delete result[key];
     }
   });
   return result;
 };
 
-export const useMount = (callback: () => void) => {
+export const useMount = (callback) => {
   useEffect(() => {
     callback();
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -29,7 +25,7 @@ export const useMount = (callback: () => void) => {
 };
 
 //hook最大的特征是在里面会用到其他hook（官方的）
-export const useDebounce = <V>(value: V, delay?: number) => {
+export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   //每次在value变化后设置一个定时器，
 
@@ -41,19 +37,4 @@ export const useDebounce = <V>(value: V, delay?: number) => {
     return () => clearTimeout(timeout);
   }, [value, delay]);
   return debouncedValue;
-};
-
-export const useArray = <T>(initialArray: T[]) => {
-  const [value, setValue] = useState(initialArray);
-  return {
-    value,
-    setValue,
-    add: (item: T) => setValue([...value, item]),
-    clear: () => setValue([]),
-    removeIndex: (index: number) => {
-      const copy = [...value];
-      copy.splice(index, 1);
-      setValue(copy);
-    },
-  };
 };

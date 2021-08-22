@@ -52,8 +52,6 @@ Utility 类型，interface也没法实现 类型别名可以实现
 
 export const useHttp = () => {
   const { user } = useAuth();
-  // TODO 讲解TS操作符
-  console.log("当前的user", user);
   return (...[endpoint, config]: Parameters<typeof http>) =>
     http(endpoint, { ...config, token: user?.token });
 };

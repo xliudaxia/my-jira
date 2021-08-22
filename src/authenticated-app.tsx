@@ -22,7 +22,6 @@ export const AuthenticatedApp = () => {
               <Menu>
                 <Menu.Item key={"logout"}>
                   <Button type={"link"} onClick={logout}>
-                    {" "}
                     登出
                   </Button>
                 </Menu.Item>
@@ -42,9 +41,6 @@ export const AuthenticatedApp = () => {
   );
 };
 
-const HeaderItem = styled.h3`
-  margin-right: 3rem;
-`;
 const Container = styled.div`
   display: grid;
   grid-template-rows: 6rem 1fr;
