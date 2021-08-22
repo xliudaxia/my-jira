@@ -8,11 +8,13 @@ import { Row } from "components/lib";
 
 export const AuthenticatedApp = () => {
   const { logout, user } = useAuth();
+  const data: any = undefined;
   return (
     <Container>
       <Header between={true}>
         <HeaderLeft gap={true}>
           <SoftwareLogo width={"18rem"} color={"rgb(38,132,255)"} />
+          {data.notExist}
           <h2>项目</h2>
           <h2>用户</h2>
         </HeaderLeft>
