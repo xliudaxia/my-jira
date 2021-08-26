@@ -2,7 +2,7 @@
  * @Author: jessLiu
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const isFalsy = (value) => (value === 0 ? false : !value);
 //在函数里，最好不要改变传入的对象
@@ -37,4 +37,21 @@ export const useDebounce = (value, delay) => {
     return () => clearTimeout(timeout);
   }, [value, delay]);
   return debouncedValue;
+};
+
+export const useDocumentTitle = (title, keepOnUnmount = true) => {
+  const oldTitle = useRef(document.title).current;
+  // const oldTitle = document.title;
+  useEffect(() => {
+    console.log("渲染时", title);
+    document.title = title;
+  }, [title]);
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) {
+        console.log("卸载时", oldTitle);
+        document.title = oldTitle;
+      }
+    };
+  }, [oldTitle, keepOnUnmount]);
 };
