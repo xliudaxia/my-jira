@@ -8,26 +8,20 @@ import { useProject } from "utils/project";
 import { useUsers } from "utils/user";
 import { useDocumentTitle } from "utils";
 import { useUrlQueryParam } from "utils/url";
+import { useProjectSearchParams } from "./utils";
 // import { Helmet } from "react-helmet";
 
 // ts优点：1、减少代码bug  2、提示增强 3、代码更易读
+// const apiUrl = process.env.REACT_APP_API_URL;
 
 export const ProjectListScreen = () => {
-  // const apiUrl = process.env.REACT_APP_API_URL;
-
-  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
-  // setParam({ name1: "123" });
-  const debouncedParam = useDebounce(param, 200);
-  const { isLoading, error, data: list } = useProject(debouncedParam);
+  useDocumentTitle("项目列表", false);
+  const [param, setParam] = useProjectSearchParams();
+  const { isLoading, error, data: list } = useProject(useDebounce(param, 200));
   const { data: users } = useUsers();
-  useDocumentTitle("我的项目列表", true);
 
   return (
     <Container>
-      {/* <Helmet>
-        <title>项目列表</title>
-      </Helmet> */}
-
       <h1>项目列表</h1>
       <SearchPanel param={param} users={users || []} setParam={setParam} />
       {error ? (
