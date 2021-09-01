@@ -25,6 +25,7 @@ export const useAsync = <D>(
     ...defaultInitialState,
     ...initialState,
   });
+  const [retry, setRetry] = useState(() => () => {});
   const setData = (data: D) =>
     setState({
       data,
@@ -37,11 +38,18 @@ export const useAsync = <D>(
       stat: "error",
       data: null,
     });
-  const run = (promise: Promise<D>) => {
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error("请输入promise类型数据");
     }
-    //这一步是让stat变成loading状态
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig?.retry(), runConfig);
+      }
+    });
     setState({ ...state, stat: "loading" });
     return (
       promise
@@ -57,6 +65,7 @@ export const useAsync = <D>(
         })
     );
   };
+
   return {
     isIdle: state.stat === "idle",
     isLoading: state.stat === "loading",
@@ -65,6 +74,8 @@ export const useAsync = <D>(
     run,
     setData,
     setError,
+    //重新跑一遍run方法
+    retry: retry,
     ...state,
   };
 };
