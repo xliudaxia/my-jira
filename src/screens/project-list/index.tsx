@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import styled from "@emotion/styled";
@@ -7,28 +7,21 @@ import { Typography } from "antd";
 import { useProject } from "utils/project";
 import { useUsers } from "utils/user";
 import { useDocumentTitle } from "utils";
+import { useUrlQueryParam } from "utils/url";
 // import { Helmet } from "react-helmet";
 
 // ts优点：1、减少代码bug  2、提示增强 3、代码更易读
 
 export const ProjectListScreen = () => {
   // const apiUrl = process.env.REACT_APP_API_URL;
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
-  const [data, setDate] = useState(0);
-  useEffect(() => {
-    console.log("当前的data", data);
-    setDate(25);
-    return () => {
-      console.log("卸载data", data);
-    };
-  }, []);
+
+  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
+  // setParam({ name1: "123" });
   const debouncedParam = useDebounce(param, 200);
   const { isLoading, error, data: list } = useProject(debouncedParam);
   const { data: users } = useUsers();
   useDocumentTitle("我的项目列表", true);
+
   return (
     <Container>
       {/* <Helmet>

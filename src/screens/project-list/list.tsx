@@ -4,7 +4,6 @@ import { User } from "./search-panel";
 import { Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import { ProjectScreen } from "screens/project";
 
 export interface Project {
   id: string;
