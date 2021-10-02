@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useMountedRef } from "utils";
 
 interface State<D> {
   error: Error | null;
@@ -25,6 +26,7 @@ export const useAsync = <D>(
     ...defaultInitialState,
     ...initialState,
   });
+  const mountedRef = useMountedRef();
   const [retry, setRetry] = useState(() => () => {});
   const setData = (data: D) =>
     setState({
@@ -38,33 +40,35 @@ export const useAsync = <D>(
       stat: "error",
       data: null,
     });
-  const run = (
-    promise: Promise<D>,
-    runConfig?: { retry: () => Promise<D> }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error("请输入promise类型数据");
-    }
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig?.retry(), runConfig);
+  const run = useCallback(
+    (promise: Promise<D>, runConfig?: { retry: () => Promise<D> }) => {
+      if (!promise || !promise.then) {
+        throw new Error("请输入promise类型数据");
       }
-    });
-    setState({ ...state, stat: "loading" });
-    return (
-      promise
-        .then((data) => {
-          setData(data);
-          return data;
-        })
-        //catch会笑话异常，如果不想被消化则需要手动抛出
-        .catch((error) => {
-          setError(error);
-          if (config.throwOnError) return Promise.reject(error);
-          return error;
-        })
-    );
-  };
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig?.retry(), runConfig);
+        }
+      });
+      setState({ ...state, stat: "loading" });
+      return (
+        promise
+          .then((data) => {
+            if (mountedRef) {
+              setData(data);
+            }
+            return data;
+          })
+          //catch会笑话异常，如果不想被消化则需要手动抛出
+          .catch((error) => {
+            setError(error);
+            if (config.throwOnError) return Promise.reject(error);
+            return error;
+          })
+      );
+    },
+    [config.throwOnError, mountedRef, setData, state]
+  );
 
   return {
     isIdle: state.stat === "idle",

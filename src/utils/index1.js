@@ -28,7 +28,6 @@ export const useMount = (callback) => {
 export const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
   //每次在value变化后设置一个定时器，
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedValue(value);
@@ -49,7 +48,6 @@ export const useDocumentTitle = (title, keepOnUnmount = true) => {
   useEffect(() => {
     return () => {
       if (!keepOnUnmount) {
-        console.log("卸载时", oldTitle);
         document.title = oldTitle;
       }
     };

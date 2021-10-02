@@ -1,23 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProjectListScreen } from "screens/project-list";
 import { useAuth } from "context/auth-context";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Dropdown, Menu, Button } from "antd";
 import styled from "@emotion/styled";
-import { Row } from "components/lib";
+import { ButtonNoPadding, Row } from "components/lib";
 import { ProjectScreen } from "screens/project";
 import { Navigate, Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
 import { resetRoute } from "utils/http";
+import { ProjectModal } from "screens/project-list/project-modal";
+import { ProjectPopover } from "components/project-popover";
 
 export const AuthenticatedApp = () => {
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
+
   return (
     <Container>
-      <PageHeader />
+      <PageHeader setProjectModalOpen={setProjectModalOpen} />
       <Main>
         <Router>
           <Routes>
-            <Route path={"/projects"} element={<ProjectListScreen />} />
+            <Route
+              path={"/projects"}
+              element={
+                <ProjectListScreen setProjectModalOpen={setProjectModalOpen} />
+              }
+            />
             <Route
               path={"/projects/:projectId/*"}
               element={<ProjectScreen />}
@@ -26,20 +35,28 @@ export const AuthenticatedApp = () => {
           </Routes>
         </Router>
       </Main>
+      <ProjectModal
+        projectModalOpen={projectModalOpen}
+        onClose={() => {
+          setProjectModalOpen(false);
+        }}
+      />
     </Container>
   );
 };
 
-const PageHeader = () => {
+const PageHeader = (props: {
+  setProjectModalOpen: (isOpen: boolean) => void;
+}) => {
   const { logout, user } = useAuth();
   return (
     <Header between={true}>
       <HeaderLeft gap={true}>
-        <Button type="link" onClick={resetRoute}>
+        <ButtonNoPadding type="link" onClick={resetRoute}>
           <SoftwareLogo width={"18rem"} color={"rgb(38,132,255)"} />
-        </Button>
-        <h2>项目</h2>
-        <h2>用户</h2>
+        </ButtonNoPadding>
+        <ProjectPopover setProjectModalOpen={props.setProjectModalOpen} />
+        <span>用户</span>
       </HeaderLeft>
       <HeaderRight>
         <Dropdown

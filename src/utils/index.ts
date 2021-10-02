@@ -2,7 +2,7 @@
  * @Author: jessLiu
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const isFalsy = (value: any) => (value === 0 ? false : !value);
 export const isVoid = (value: unknown) =>
@@ -30,14 +30,14 @@ export const useMount = (callback: () => void) => {
 
 //hook最大的特征是在里面会用到其他hook（官方的）
 export const useDebounce = <V>(value: V, delay?: number) => {
+  //初始化一个存储debounce参数的state
   const [debouncedValue, setDebouncedValue] = useState(value);
-  //每次在value变化后设置一个定时器，
-
+  //每次在value和delay变化后设置一个定时器
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-    //每次在上一个useEffect处理完以后再运行
+    //每次在上一个useEffect处理完以后再运行（清理的时候执行）
     return () => clearTimeout(timeout);
   }, [value, delay]);
   return debouncedValue;
@@ -68,4 +68,15 @@ export const useDocumentTitle = (title: string, keepOnUnmount = true) => {
       document.title = oldTitle;
     }
   };
+};
+
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  });
+  return mountedRef;
 };
