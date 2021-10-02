@@ -7,17 +7,14 @@ import { Button, Row, Typography } from "antd";
 import { useProject } from "utils/project";
 import { useUsers } from "utils/user";
 import { useDocumentTitle } from "utils";
-import { useUrlQueryParam } from "utils/url";
-import { useProjectSearchParams } from "./utils";
+import { useProjectModal, useProjectSearchParams } from "./utils";
 // import { Helmet } from "react-helmet";
-
 // ts优点：1、减少代码bug  2、提示增强 3、代码更易读
 // const apiUrl = process.env.REACT_APP_API_URL;
 
-export const ProjectListScreen = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectListScreen = () => {
   useDocumentTitle("项目列表", false);
+  const { close, open } = useProjectModal();
   const [param, setParam] = useProjectSearchParams();
   const {
     isLoading,
@@ -31,9 +28,7 @@ export const ProjectListScreen = (props: {
     <Container>
       <Row style={{ display: "flex", justifyContent: "space-between" }}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>
-          创建项目
-        </Button>
+        <Button onClick={open}>创建项目</Button>
       </Row>
       <SearchPanel param={param} users={users || []} setParam={setParam} />
       {error ? (
@@ -44,7 +39,7 @@ export const ProjectListScreen = (props: {
         loading={isLoading}
         users={users || []}
         dataSource={list || []}
-        setProjectModalOpen={props.setProjectModalOpen}
+        setProjectModalOpen={open}
       />
     </Container>
   );

@@ -54,8 +54,8 @@ export const useProjectModal = () => {
   const [{ projectCreate }, setProjectCreate] = useUrlQueryParam([
     "projectCreate",
   ]);
-  const open = setProjectCreate({ projectCreate: true });
-  const close = setProjectCreate({ projectCreate: false });
+  const open = () => setProjectCreate({ projectCreate: true });
+  const close = () => setProjectCreate({ projectCreate: undefined });
 
   return {
     projectModalOpen: projectCreate === "true",
