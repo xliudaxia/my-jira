@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import styled from "@emotion/styled";
@@ -23,13 +23,26 @@ export const ProjectListScreen = () => {
     retry,
   } = useProject(useDebounce(param, 200));
   const { data: users } = useUsers();
+  const [value, setValue] = useState("");
+  const name = { age: 15 };
+  console.log(name);
+  useEffect(() => {
+    setValue(String(Math.random()));
+  }, []);
 
   return (
     <Container>
       <Row style={{ display: "flex", justifyContent: "space-between" }}>
         <h1>项目列表</h1>
+
         <Button onClick={open}>创建项目</Button>
       </Row>
+      <input
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+      />
       <SearchPanel param={param} users={users || []} setParam={setParam} />
       {error ? (
         <Typography.Text type={"danger"}>{error.message}</Typography.Text>
