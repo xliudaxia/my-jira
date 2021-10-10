@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useMount(
     useCallback(() => {
       run(bootstrapUser());
+      //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
   );
   if (isIdle || isLoading) {

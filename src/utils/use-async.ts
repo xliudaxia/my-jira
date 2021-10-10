@@ -28,6 +28,7 @@ export const useAsync = <D>(
   });
   const mountedRef = useMountedRef();
   const [retry, setRetry] = useState(() => () => {});
+  //eslint-disable-next-line react-hooks/exhaustive-deps
   const setData = (data: D) =>
     setState({
       data,

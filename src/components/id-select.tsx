@@ -2,7 +2,6 @@
  * @Author: jessLiu
  */
 import { Select } from "antd";
-import { SelectProps } from "rc-select";
 import React from "react";
 import { Row } from "types";
 
@@ -14,8 +13,8 @@ interface IdSelectProps
     selectProps,
     "value" | "onChange" | "defaultOptionName" | "options"
   > {
-  value: Row | undefined | null;
-  onChange: (value?: number) => void;
+  value?: Row | undefined | null;
+  onChange?: (value?: number) => void;
   defaultOptionName?: string;
   options?: { name: string; id: number }[];
 }
@@ -30,7 +29,7 @@ export const IdSelect = (props: IdSelectProps) => {
   return (
     <Select
       value={options?.length ? toNumber(value) : 0}
-      onChange={(value) => onChange(toNumber(value) || undefined)}
+      onChange={(value) => onChange?.(toNumber(value) || undefined)}
       {...restProps}
     >
       {defaultOptionName ? (

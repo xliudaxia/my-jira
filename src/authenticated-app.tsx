@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { ProjectListScreen } from "screens/project-list";
 import { useAuth } from "context/auth-context";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";

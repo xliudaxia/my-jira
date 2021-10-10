@@ -1,14 +1,9 @@
 import { useMemo } from "react";
-import { useHttp } from "utils/http";
-import { useUrlQueryParam } from "utils/url";
-import { useAsync } from "utils/use-async";
-import { Project } from "./list";
+import { useProject } from "utils/project";
+import { useUrlQueryParam, useSetUrlSearchParam } from "utils/url";
 
-/*
- * @Author: jessLiu
- */
 // 项目列表搜索参数
-export const useProjectSearchParams = () => {
+export const useProjectsSearchParams = () => {
   const [param, setParam] = useUrlQueryParam(["name", "personId"]);
   return [
     useMemo(() => {
@@ -17,49 +12,36 @@ export const useProjectSearchParams = () => {
     setParam,
   ] as const;
 };
-export const useEditProject = () => {
-  const { run, ...asyncResult } = useAsync();
-  const client = useHttp();
-  const mutate = (params: Partial<Project>) => {
-    return run(
-      client(`projects/${params.id}`, {
-        data: params,
-        method: "PATCH",
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
-};
-export const useAddProject = () => {
-  const { run, ...asyncResult } = useAsync();
-  const client = useHttp();
-  const mutate = (params: Partial<Project>) => {
-    return run(
-      client(`projects/${params.id}`, {
-        data: params,
-        method: "POST",
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
-};
 
 export const useProjectModal = () => {
+  const setUrlParams = useSetUrlSearchParam();
   const [{ projectCreate }, setProjectCreate] = useUrlQueryParam([
     "projectCreate",
   ]);
+
+  const [{ editingProjectId }, setEditingProjectId] = useUrlQueryParam([
+    "editingProjectId",
+  ]);
+  const { data: editingProject, isLoading } = useProject(
+    Number(editingProjectId)
+  );
+
   const open = () => setProjectCreate({ projectCreate: true });
-  const close = () => setProjectCreate({ projectCreate: undefined });
+  const close = () => setUrlParams({ projectCreate: "", editingProjectId: "" });
+  const startEdit = (id: number) =>
+    setEditingProjectId({ editingProjectId: id });
 
   return {
-    projectModalOpen: projectCreate === "true",
+    projectModalOpen: projectCreate === "true" || Boolean(editingProjectId),
     open,
     close,
+    startEdit,
+    editingProject,
+    isLoading,
   };
+};
+
+export const useProjectsQueryKey = () => {
+  const [params] = useProjectsSearchParams();
+  return ["projects", params];
 };

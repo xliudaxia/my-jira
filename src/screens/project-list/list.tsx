@@ -1,12 +1,13 @@
 import React from "react";
 import { User } from "./search-panel";
 // import { useArray } from "../../utils/index";
-import { Dropdown, Menu, Table, TableProps } from "antd";
+import { Dropdown, Menu, Modal, Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { Pin } from "components/pin";
-import { useEditProject } from "./utils";
+import { useDeleteProject, useEditProject } from "utils/project";
 import { ButtonNoPadding } from "components/lib";
+import { useProjectModal } from "./utils";
 
 export interface Project {
   id: number;
@@ -19,18 +20,28 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[];
-  refresh: () => void;
   setProjectModalOpen: (isOpen: boolean) => void;
 }
 
 export const List = ({ users, ...props }: ListProps) => {
   const { mutate } = useEditProject();
+  const { mutate: deleteProject } = useDeleteProject();
   // const { value, clear, removeIndex, add } = useArray([
   //   { name: "douban", age: 16 },
-
   // ]);
-  const pinProject = (id: number) => (pin: boolean) =>
-    mutate({ id: id, pin }).then(props.refresh);
+  const confirmDeleteProject = (id: number) => {
+    Modal.confirm({
+      title: "确定删除这个项目吗?",
+      content: "点击确定删除",
+      okText: "确定",
+      onOk() {
+        deleteProject({ id });
+      },
+    });
+  };
+  const { startEdit } = useProjectModal();
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id: id, pin });
+  const editProject = (id: number) => () => startEdit(id);
   return (
     <Table
       pagination={false}
@@ -87,11 +98,18 @@ export const List = ({ users, ...props }: ListProps) => {
                   <Menu>
                     <Menu.Item key="edit">
                       <ButtonNoPadding
-                        onClick={() => props.setProjectModalOpen(true)}
+                        // onClick={() => props.setProjectModalOpen(true)}
+                        onClick={editProject(project.id)}
                         type="link"
                       >
                         编辑
                       </ButtonNoPadding>
+                    </Menu.Item>
+                    <Menu.Item
+                      key={"delete"}
+                      onClick={() => confirmDeleteProject(project.id)}
+                    >
+                      删除
                     </Menu.Item>
                   </Menu>
                 }
